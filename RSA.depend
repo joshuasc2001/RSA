@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1620666117 source:e:\college\third-year\cs319\project\rsa\main.cpp
+	<iostream>
+	<fstream>
+	<math.h>
+	<string.h>
+
+1620663069 source:e:\college\third-year\cs319\project\rsa\src\int_64.cpp
+	"int_64.h"
+
+1620663294 e:\college\third-year\cs319\project\rsa\include\int_64.h
+
+1620665875 source:e:\college\third-year\cs319\project\rsa\src\bigint.cpp
+
+1620665829 e:\college\third-year\cs319\project\rsa\include\bigint.h
+
+1620665971 e:\college\third-year\cs319\project\rsa\src\bigint.cpp
+
