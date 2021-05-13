@@ -2,67 +2,13 @@
 #include <fstream>
 #include <math.h>
 #include <string.h>
+#include "bigInt.h"
 
 using namespace std;
-typedef unsigned long long int int_64;
-
-
-//Computes (a * b) mod c
-int_64 modularMul(int_64 a, int_64 b, int_64 c)
-{
-    int_64 r=0;
-    a=a%c;
-
-    while(b>0)
-    {
-        if(b%2==1)
-            r=(r+a)%c;
-        a=(a*2)%c;
-        b/=2;
-    }
-    return r%c;
-}
-
-//Does modular exponentiation
-int_64 computeModExp(int_64 base, int_64 exponent, int_64 mod)
-{
-
-    if(mod == 0)
-        return 0;
-
-    base %= mod;
-    int_64 r = 1;
-
-    while (exponent > 0)
-    {
-        if (exponent % 2 == 1)
-            r = modularMul(r, base, mod);
-        base = modularMul(base, base, mod);
-        exponent /= 2;
-    }
-    return r;
-}
-
-int_64 extendedGCD(int_64 a, int_64 b, int_64 &d, int_64 &k)
-{
-    int_64 d1, k1, res;
-
-    if(b == 0)
-    {
-        d = 1;
-        k = 0;
-        return a;
-    }
-
-    res = extendedGCD(b, a%b, d1, k1);
-    k = d1 - (a/b) * k1;
-    d = k1;
-    return res;
-}
 
 int main()
 {
-    int_64 p, q, n, e, phi, d, k, cipher, decipher;
+    bigInt p, q, n, e, phi, d, k, cipher, decipher;
     string enciphered, deciphered, message, delimiter = " ", token, content;
     ifstream messageFile("message.txt");
     ifstream ifs("ecnrypted.txt");
@@ -81,7 +27,7 @@ int main()
     {
         //cout<<"Enter the encryption key, e: ";
         //cin>>e;
-        e=19967;//for testing
+        e=19967;
         if(cin.fail() || e < 0)
         {
             cout<<"Invalid key, try again with positive integers."<<endl;
@@ -89,10 +35,12 @@ int main()
         }
 
     }
-    while(extendedGCD(e, phi, d, k) != 1 || e == 1);
+    while(GCD(e, phi, d, k)!= 1 || e==1);
 
     if(d < 0)
+    {
         d+=phi;
+    }
 
     message.assign( (istreambuf_iterator<char>(messageFile) ),(istreambuf_iterator<char>()));
 
@@ -102,7 +50,7 @@ int main()
     {
         char x = message.at(i);
         int_64 temp = int(x);
-        cipher = computeModExp(temp, e, n);
+        cipher = modularExponent(temp, e, n);
         enciphered = enciphered + to_string(cipher) + " " ;
     }
 
@@ -117,7 +65,7 @@ int main()
     {
         token = content.substr(0, pos);
         int_64 temp = stoull(token);
-        decipher = computeModExp(temp, d, n);
+        decipher = modularExponent(temp, d, n);
         deciphered = deciphered + char(decipher);
         content.erase(0, pos + delimiter.length());
     }
@@ -125,7 +73,6 @@ int main()
     decryptedFile<< deciphered;
     decryptedFile.close();
     cout <<"\nMessage has been decrypted" << endl;
-
 
     return 0;
 }
